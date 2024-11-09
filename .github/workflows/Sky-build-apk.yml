@@ -1,0 +1,63 @@
+name: Sky APK Build Action (new) z
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository :
+        description: 'git clone url'
+        required: true
+        default: "https://github.com/skylersaleh/SkyEmu.git"
+      jdkVersion:
+        description: "OpenJDK version to use: 8 / 11 / 17 etc."
+        required: false
+        default: "17"
+      repo-commit:
+        description: 'commit'
+      
+      
+      
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        
+      - name: clone
+        run: |
+          git clone ${{ github.event.inputs.repository }}
+          echo "projectName=$(basename -s .git ${{ github.event.inputs.repository }})" >> $GITHUB_ENV
+          echo "dirName=$(echo ${{ github.event.inputs.repo-dir }} | sed -r 's/[/]+/ - /g')" >> $GITHUB_ENV
+        
+      - name: select commit
+        if: ${{ github.event.inputs.repo-commit != '' }}
+        run: |
+          cd ${{ env.projectName }}
+          git checkout ${{ github.event.inputs.repo-commit }}
+          
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: ${{ github.event.inputs.jdkVersion }}
+
+          
+      - name: build
+        run: |
+          cd '/home/runner/work/grab-n-build/grab-n-build/SkyEmu/tools/android_project'
+          chmod +x gradlew
+          ./gradlew ${{ github.event.inputs.module }}:assembleRelease
+
+          
+      - name: Upload the APK artifact with 1 day retention
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./**/*.apk
+          name: apk-archive
+          retention-days: 1
+          
+      
+
+
+
