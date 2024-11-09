@@ -10,10 +10,13 @@ on:
       jdkVersion:
         description: "OpenJDK version to use: 8 / 11 / 17 etc."
         required: false
-        default: "17"
+        default: "8"
       repo-commit:
         description: 'commit'
-      
+      taskName:
+        description: "build.gradle task name: assemble[Flavor]Debug"
+        required: false
+        default: "assembleDebug"
       
       
 
