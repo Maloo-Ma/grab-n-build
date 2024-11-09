@@ -50,7 +50,7 @@ jobs:
         run: |
           cd '/home/runner/work/grab-n-build/grab-n-build/SkyEmu/tools/android_project'
           chmod +x gradlew
-          ./gradlew ${{ github.event.inputs.module }}:assembleDebug
+          ./gradlew ${{ github.event.inputs.module }}:assemble
            
 
           
