@@ -1,0 +1,44 @@
+name: Build Android APK z
+on:
+  workflow_dispatch:
+    inputs:
+      
+      jdkVersion:
+        description: "OpenJDK version to use: 8 / 11 / 17 etc."
+        required: false
+        default: "17"
+      taskName:
+        description: "build.gradle task name: assemble[Flavor]Debug"
+        required: false
+        default: "assembleDebug"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Android SDK is built-in in this image
+    steps:
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: ${{ github.event.inputs.jdkVersion }}
+
+      - name: Clone project
+        run: git clone https://github.com/skylersaleh/SkyEmu.git [workspace]
+        
+      - name: select commit
+        working-directory: ./workspace
+        run : git checkout 64e6def42dae0cf643fbfd2fca9cfd277d7c64e1
+
+      - name: Build APK
+        working-directory: ./workspace/tools/android_project
+        run: |
+          if [ ! -f "gradlew" ]; then gradle wrapper; fi
+          chmod +x gradlew
+          ./gradlew ${{ github.event.inputs.taskName }} --stacktrace
+
+      - name: Upload the APK artifact with 1 day retention
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./**/*.apk
+          name: apk-archive
+          retention-days: 1
