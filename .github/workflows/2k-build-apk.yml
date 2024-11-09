@@ -1,4 +1,4 @@
-name: Sky APK Build Action (new) z
+name: 2k Sky APK Build Action (new) z
 
 on:
   workflow_dispatch:
