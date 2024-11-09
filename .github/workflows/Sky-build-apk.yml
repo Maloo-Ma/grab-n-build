@@ -13,10 +13,7 @@ on:
         default: "8"
       repo-commit:
         description: 'commit'
-      taskName:
-        description: "build.gradle task name: assemble[Flavor]Debug"
-        required: false
-        default: "assembleDebug"
+      
       
       
 
@@ -24,8 +21,7 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
+
         
       - name: clone
         run: |
